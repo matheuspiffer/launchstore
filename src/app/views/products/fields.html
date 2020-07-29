@@ -3,7 +3,7 @@
     <div>
         <select name="category_id" id="">
             {% for category in categories %}
-                <option value="{{category.id}}" {% if product.category_id == category.id %} selected {% endif %}>{{category.name}}</option>
+                <option value="{{category.id}}" {% if product.category_id == category.id %} selected="selected" {% endif %}>{{category.name}}</option>
             {% endfor %}
         </select>
     </div>
@@ -18,6 +18,28 @@
     <div>Descrição</div>
     <div>
         <textarea name="description">{{product.description}}</textarea>
+    </div>
+</div>
+<div class="item">
+    <div>Fotos</div>
+    <div>
+        <div id="photos-upload">
+            <input id="photos-input" name="photos" type="file" multiple="multiple" accept="image/*" onchange="PhotosUpload.handleInputFile(event)">
+            <p>Seleciona ate 6 fotos</p>
+        </div>
+        <div id="photos-preview">
+            {% if files %}
+                {% for image in files %}
+                    <div class="photo" id="{{image.id}}" onclick="PhotosUpload.removeOldPhoto(event)">
+                        <img src="{{image.address}}" alt="{{image.name}}">
+                        <i class="material-icons">
+                            close
+                        </i>
+                    </div>
+                {% endfor %}
+                <input type="hidden" name="removed_files">
+            {% endif %}
+        </div>
     </div>
 </div>
 <div class="item">
@@ -41,10 +63,10 @@
         <div>Disponibilidade</div>
         <div>
             <span>
-                <input type="radio" name="status" value="1" {% if product.status == '1' %} checked {% endif %}>Sim
+                <input type="radio" name="status" value="1" {% if product.status == '1' %} checked="checked" {% endif %}>Sim
             </span>
             <span>
-                <input type="radio" name="status" value="2" {% if product.status == '2' %} checked {% endif %}>Não
+                <input type="radio" name="status" value="2" {% if product.status == '2' %} checked="checked" {% endif %}>Não
             </span>
         </div>
     </div>

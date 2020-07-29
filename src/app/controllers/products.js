@@ -1,5 +1,6 @@
 const Category = require('../models/category')
 const Product = require('../models/product')
+const File = require('../models/file')
 const { formatPrice } = require('../../lib/utils')
 module.exports = {
     create(req, res) {
@@ -18,8 +19,11 @@ module.exports = {
                 res.send('Please fill ' + key)
             }
         })
+        if (req.files.length == 0) return res.send('Please, choose at least one image')
         let results = await Product.create(req.body)
         const productId = results.rows[0].id
+        const filesPromises = req.files.map(file => File.create({ ...file, productId }))
+        await Promise.all(filesPromises)
         return res.redirect('/products/' + productId)
     },
 
@@ -32,16 +36,36 @@ module.exports = {
         product.price = formatPrice(product.price)
         results = await Category.all()
         const categories = results.rows
-        return res.render('products/edit', { product, categories })
+        results = await Product.files(product.id)
+        let files = results.rows
+        files = files.map(file => ({
+            ...file,
+            address: `${req.protocol}://${req.headers.host}${file.path.replace('public', "")}`
+        }))
+        return res.render('products/edit', { product, categories, files })
     },
 
     async put(req, res) {
         const keys = Object.keys(req.body)
         keys.forEach(key => {
-            if (!req.body[key]) {
+            if (!req.body[key] && key != 'removed_files') {
                 res.send('Please fill ' + key)
             }
         })
+        if (req.files.length != 0) {
+            console.log(req.files)
+            const newFilesPromise = req.files.map(file => {
+                File.create({ ...file, productId: req.body.id })
+            })
+            await Promise.all(newFilesPromise)
+        }
+        if (req.body.removed_files) {
+            const removedFiles = req.body.removed_files.split(',')
+            const lastIndex = removedFiles.length - 1
+            removedFiles.splice(lastIndex, 1)
+            const removedFilesPromises = removedFiles.map(id => { File.delete(id) })
+            await Promise.all(removedFilesPromises)
+        }
         req.body.price = req.body.price.replace(/\D/g, "")
         if (req.body.old_price != req.body.price) {
             const oldProduct = await Product.find(req.body.id)
