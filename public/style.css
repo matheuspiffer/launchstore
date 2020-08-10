@@ -431,12 +431,12 @@ form .item #photos-preview img {
 .shop .items p {
     color: #101010;
     font-weight: 300;
-    font-size: 24px;
+    font-size: 18px;
     margin-top: 8px;
 
 }
 
-.shop .product .old-price {
+.shop .product .old-price p {
     padding: 0;
     margin: 4px 0;
     color: #999;
