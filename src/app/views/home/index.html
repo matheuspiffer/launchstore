@@ -1,29 +1,6 @@
 {%extends 'layout.html'%}
-
+{%import "parts/sections-products.html" as section %}
 {% block content %}
-
-    <section class="shop container">
-        <h2>Últimos produtos</h2>
-
-        <div class="items">
-            {% for product in products %}
-                <div class="product">
-                    <div class="image">
-                    <img src="{{product.img if product.img else '//placehold.it/500x500'}}">
-                      
-                    </div>
-                    {% if product.oldPrice != product.price %}
-                        <div class="old-price">
-                            <p>{{product.oldPrice}}</p>
-                        </div>
-                    {% endif %}
-                    <p>{{product.price}}</p>
-                    <h4>{{product.name}}</h4>
-
-                    <a href="/products/{{product.id}}" class="button">Comprar</a>
-                </div>
-            {% endfor %}
-        </div>
-    </section>
+    {{section.products('Últimos produtos', 'container', products)}}
 
 {%endblock content%}}
