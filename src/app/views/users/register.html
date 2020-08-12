@@ -1,0 +1,15 @@
+{%extends 'layout.html'%}
+
+{% block content %}
+    <section class="user-register container form">
+        <form action="/users/register" method="post" enctype="multipart/form-data">
+            <div class="header">
+                <h3>Registre-se</h3>
+            </div>
+            <div class="fields">
+                {%include 'users/fields.html'%}
+            </div>
+            <button class="button" type="submit">Salvar</button>
+        </form>
+    </section>
+{% endblock content %}
