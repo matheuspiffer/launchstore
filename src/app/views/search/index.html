@@ -6,20 +6,21 @@
         <aside>
             <div class="header">
                 <h2>{{search.term}}</h2>
-                <p>{{search.total}} encontrados</p>
+                <p>{{search.total}}
+                    encontrados</p>
             </div>
             <nav class="categories">
                 <h4>Categorias</h4>
                 <ul>
                     {% for category in categories %}
-                    <li>
-                        <a href="/products/search?filter={{search.term}}&category={{category.id}}">{{category.name}}</a>
-                    </li>
+                        <li>
+                            <a href="/products/search?filter={{search.term}}&category={{category.id}}">{{category.name}}</a>
+                        </li>
                     {% endfor %}
                 </ul>
             </nav>
         </aside>
-         {{section.products('', 'searched', products)}}
+        {{section.products('', 'searched', products)}}
     </section>
 
 {%endblock content%}}
