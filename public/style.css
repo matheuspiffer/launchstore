@@ -487,10 +487,19 @@ form .item #photos-preview img {
 .user-register.container.form{
     max-width: 500px;
 }
-.form input[name="cep"],
+/* .form input[name="cep"],
 .form input[name="email"],
 .form input[name="cpf_cnpj"],
 .form input[name="password"],
 .form input[name="passwordRepeat"]{
     max-width: 60%;
+} */
+
+/* VALIDATE ERROR */
+.input .error{
+    background-color: #e74c3c;
+    padding: 4px;
+    border-radius: 4px;
+    color: white;
+    
 }
