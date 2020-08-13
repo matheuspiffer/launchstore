@@ -13,15 +13,15 @@
 <div class="item">
     <div>Senha</div>
     <div class='input'>
-        <input type="password" name="password" placeholder="Digite uma senha" value="{{user.password}}">
+        <input type="password" name="password" placeholder="Digite uma senha">
     </div>
 </div>
 
-{% if user.id %}
+{% if not user.id %}
     <div class="item">
         <div>Repetir senha</div>
         <div class='input'>
-            <input type="password" name="passwordRepeat" placeholder="Digite novamente" value="{{user.password}}">
+            <input type="password" name="passwordRepeat" placeholder="Digite novamente">
         </div>
     </div>
 {% endif %}
