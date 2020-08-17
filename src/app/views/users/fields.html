@@ -13,7 +13,15 @@
 <div class="item">
     <div>Senha</div>
     <div class='input'>
-        <input type="password" name="password" placeholder="Digite uma senha">
+        <input 
+        type="password" 
+        name="password" 
+        {% if not user.id%}
+        placeholder="Digite uma senha"
+        {%else%}
+        placeholder="Digite sua senha para atualizar o cadastro"
+        {%endif%}
+        >
     </div>
 </div>
 
