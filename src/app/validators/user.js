@@ -1,9 +1,12 @@
 const User = require('../models/user')
 
+const {compare } = require("bcryptjs")
+
+
 function checkAllFields(body){
-    const keys = Object.keys(req.body)
+    const keys = Object.keys(body)
     keys.forEach(key => {
-        if (!req.body[key]) {
+        if (!body[key]) {
             return{ 
                 error: 'Por favor preencha  todos os campos', 
                 user: body 
@@ -47,9 +50,21 @@ async function update(req, res, next) {
 
     if(fillAllFields) return res.render('users/index', fillAllFields)
 
-    const { id, password} = req.body
+    const { id, password } = req.body
 
-    
+    if(!password) return res.render('users/index',{
+        user: req.body, 
+        error: "Coloque sua senha para atualizar o seu cadastro"
+    })
+    const user  = await User.findOne({where: {id}})
+    const passed = await compare(password, user.password)
+    if(!passed) return res.render("users/index", {
+        user: req.body, 
+        error:"Senha incorreta"
+    })
+
+    req.user = user
+    next()
 }
 
-module.exports = { post, show }
+module.exports = { post, show, update }
