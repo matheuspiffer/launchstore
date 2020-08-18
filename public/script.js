@@ -48,6 +48,7 @@ const PhotosUpload = {
     files: [],
     handleInputFile(event) {
         const { files: fileList } = event.target
+        console.log(event.target.files)
         PhotosUpload.input = event.target
         if (PhotosUpload.hasLimit(event)) return
         Array.from(fileList).forEach(file => {
@@ -62,6 +63,7 @@ const PhotosUpload = {
             reader.readAsDataURL(file)
         })
         PhotosUpload.input.files = PhotosUpload.getAllFiles()
+        console.log(PhotosUpload.files)
     },
     getAllFiles() {
         const dataTransfer = new ClipboardEvent("").clipboardData || new DataTransfer()
