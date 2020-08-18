@@ -19,7 +19,7 @@ async function show(req, res, next) {
     const {userId: id} = req.session
     const user = await User.findOne({where: {id}})
     if(!user) return res.render('user/register', {error: 'usuário não encontrado'})
-
+    
     req.user = user
     next()
 }
