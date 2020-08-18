@@ -1,23 +1,26 @@
 const db = require('../config/db')
 const { hash } = require('bcryptjs')
-const { update } = require('../controllers/user')
 
 module.exports = {
     async findOne(filters) {
-        let query = "SELECT * FROM users"
-        Object.keys(filters).map(key => {
-            query = `${query}
-            ${key}`
+        try {
+            let query = "SELECT * FROM users"
+            Object.keys(filters).map(key => {
+                query = `${query}
+                ${key}`
 
-            Object.keys(filters[key]).map(field => {
-                query = `${query} ${field} = '${filters[key][field]}'`
+                Object.keys(filters[key]).map(field => {
+                    query = `${query} ${field} = '${filters[key][field]}'`
+                })
             })
-        })
+            const results = await db.query(query)
+            return results.rows[0]
+        }
+        catch (err) {
+            console.error(err)
+        }
 
-        const results = await db.query(query)
-        return results.rows[0]
     },
-
     async create(data) {
         try {
             const query = `
@@ -47,23 +50,27 @@ module.exports = {
             console.error(err)
         }
     },
-
     async update(id, fields) {
-        let query = "UPDATE users SET"
-        Object.keys(fields).map((key, index, array) =>{
-            if( index + 1 < array.length) {
-                query = `${query}
-                ${key} = '${fields[key]}',
-                `
-            } else {
-                query = `${query}
-                ${key} = '${fields[key]}'
-                WHERE id = ${id}
-                `
-            }
-        })
-        console.log(query)
-        await db.query(query)
-        return
+        try {
+            let query = "UPDATE users SET"
+            Object.keys(fields).map((key, index, array) => {
+                if (index + 1 < array.length) {
+                    query = `${query}
+                    ${key} = '${fields[key]}',
+                    `
+                } else {
+                    query = `${query}
+                    ${key} = '${fields[key]}'
+                    WHERE id = ${id}
+                    `
+                }
+            })
+            console.log(query)
+            await db.query(query)
+            return
+        }
+        catch (err) {
+            console.error(err)
+        }
     }
 }

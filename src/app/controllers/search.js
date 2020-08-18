@@ -12,6 +12,7 @@ module.exports = {
             params.filter = filter
             if (category) params.category = category
             results = await Product.search(params)
+            console.log(results)
             async function getImage(productId) {
                 let results = await Product.files(productId)
                 let files = results.rows.map(file => `${req.protocol}://${req.headers.host}${file.path.replace('public', "")}`)
