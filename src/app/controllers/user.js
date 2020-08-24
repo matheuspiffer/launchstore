@@ -1,6 +1,7 @@
 const User = require("../models/user.js");
 const Validator = require("../validators/user");
 const { formatCep, formatCpfCnpj } = require("../../lib/utils");
+
 module.exports = {
   registerForm(req, res) {
     return res.render("users/register");
@@ -41,5 +42,20 @@ module.exports = {
       return res.render("users/index", { error: "Algum erro aconteceu" });
     }
   },
-
+  async delete(req, res) {
+    try {
+      await User.delete(req.body.id);
+      req.session.destroy();
+      return res.render("session/login", {
+        success: "Conta deletada com sucesso",
+      });
+    } catch (err) {
+      console.error(err);
+      console.log(req.body);
+      return res.render("users/index", {
+        error: "Erro ao tentar deletar sua conta",
+        user: req.body,
+      });
+    }
+  },
 };
