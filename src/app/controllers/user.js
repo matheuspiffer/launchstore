@@ -46,6 +46,7 @@ module.exports = {
     try {
       await User.delete(req.body.id);
       req.session.destroy();
+      
       return res.render("session/login", {
         success: "Conta deletada com sucesso",
       });
