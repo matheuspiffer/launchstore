@@ -1,8 +1,8 @@
 const express = require("express");
 const routes = express.Router();
 
-const sessionController = require("../app/controllers/session");
-const userController = require("../app/controllers/user");
+const sessionController = require("../app/controllers/SessionController");
+const userController = require("../app/controllers/UserController");
 const userValidator = require("../app/validators/user");
 const sessionValidator = require("../app/validators/session");
 const {

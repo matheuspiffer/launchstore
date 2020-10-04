@@ -1,6 +1,6 @@
-const Category = require('../models/category')
-const Product = require('../models/product')
-const File = require('../models/file')
+const Category = require('../models/Category')
+const Product = require('../models/Product')
+const File = require('../models/File')
 const { formatPrice, date } = require('../../lib/utils')
 module.exports = {
     async index(req, res) {

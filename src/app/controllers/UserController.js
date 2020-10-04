@@ -1,4 +1,4 @@
-const User = require("../models/user.js");
+const User = require("../models/User.js");
 const Validator = require("../validators/user");
 const { formatCep, formatCpfCnpj } = require("../../lib/utils");
 
@@ -37,8 +37,6 @@ module.exports = {
         success: "Conta atualizada com sucesso",
       });
     } catch (err) {
-      console.log(req.user, req.body);
-      console.error(err);
       return res.render("users/index", { error: "Algum erro aconteceu" });
     }
   },
@@ -51,8 +49,6 @@ module.exports = {
         success: "Conta deletada com sucesso",
       });
     } catch (err) {
-      console.error(err);
-      console.log(req.body);
       return res.render("users/index", {
         error: "Erro ao tentar deletar sua conta",
         user: req.body,

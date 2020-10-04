@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("../app/middlewares/multer");
-const productsController = require("../app/controllers/products");
-const searchController = require("../app/controllers/search");
+const productsController = require("../app/controllers/ProductsController");
+const searchController = require("../app/controllers/SearchController");
 const { onlyUsers } = require("../app/middlewares/session");
 const routes = express.Router();
 

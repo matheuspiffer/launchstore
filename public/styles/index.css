@@ -229,7 +229,7 @@ form .item #photos-input {
 }
 form .item #photos-preview {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 8px;
     width: 100%;
     margin: 8px;
