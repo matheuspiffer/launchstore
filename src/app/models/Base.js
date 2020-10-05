@@ -2,12 +2,14 @@ const db = require("../config/db");
 
 function find(filters, table) {
   let query = `SELECT * FROM ${table}`;
-  Object.keys(filters).map((key) => {
-    query += `${key}`;
-    Object.keys(filters[key]).map((field) => {
-      query += `${field} = '${filters[key][field]}'`;
+  if (filters) {
+    Object.keys(filters).map((key) => {
+      query += `${key}`;
+      Object.keys(filters[key]).map((field) => {
+        query += `${field} = '${filters[key][field]}'`;
+      });
     });
-  });
+  }
   return db.query(query);
 }
 const Base = {
@@ -34,9 +36,9 @@ const Base = {
       let values = [];
       Object.keys(fields).map((key) => {
         keys.push(key);
-        values.push(fields[key]);
+        values.push(`'${fields[key]}'`);
       });
-      const query = `INSER INTO ${this.table} (${keys.join(",")})
+      const query = `INSERT INTO ${this.table} (${keys.join(",")})
         VALUES (${values.join(",")})
         RETURNING id`;
       const results = await db.query(query);
