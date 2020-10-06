@@ -69,19 +69,19 @@ module.exports = {
       const products = await Product.findAll({
         where: { user_id: req.body.id },
       });
+      console.log(products);
       //dos produtos, pegar todas as imagens
-      const allFilesPromise = products.map((product) => {
-        Product.files(product.id);
+      const allFilesPromise = products.map(async (product) => {
+        await Product.files(product.id);
       });
-      let promiseResults = await Promise.all(allFilesPromise);
 
+      let promiseResults = await Promise.all(allFilesPromise);
       //rodar a remoção do usuário
       await User.delete(req.body.id);
       req.session.destroy();
       //remover as imagens da pasta public
-      promiseResults.map((result) => {
-        console.log(result);
-        result.rows.map((file) => {
+      promiseResults.map((files) => {
+        files.map((file) => {
           try {
             fs.unlinkSync(file.path);
           } catch (err) {
@@ -93,6 +93,7 @@ module.exports = {
         success: "Conta deletada com sucesso",
       });
     } catch (err) {
+      console.error(err);
       return res.render("users/index", {
         error: "Erro ao tentar deletar sua conta",
         user: req.body,

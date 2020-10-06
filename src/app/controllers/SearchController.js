@@ -1,36 +1,20 @@
 const Category = require("../models/Category");
 const Product = require("../models/Product");
 const File = require("../models/File");
-const { formatPrice, date } = require("../../lib/utils");
+const LoadProductsService = require("../services/loadProductServices");
 module.exports = {
   async index(req, res) {
     try {
-      let results,
-        params = {};
+      let params = {};
       const { filter, category } = req.query;
+      console.log(req.query);
       if (!filter) return res.redirect("/");
       params.filter = filter;
       if (category) params.category = category;
       let products = await Product.search(params);
-      console.log(results);
-      async function getImage(productId) {
-        let files = await Product.files(productId);
-        files = files.map(
-          (file) =>
-            `${req.protocol}://${req.headers.host}${file.path.replace(
-              "public",
-              ""
-            )}`
-        );
-        return files[0];
-      }
-      const productsPromise = products.map(async (product) => {
-        product.img = await getImage(product.id);
-        product.price = formatPrice(product.price);
-        product.oldPrice = formatPrice(product.old_price);
-
-        return product;
-      });
+      const productsPromise = products.map((product) =>
+        LoadProductsService.format(product)
+      );
       products = await Promise.all(productsPromise);
 
       const search = {
@@ -52,6 +36,7 @@ module.exports = {
 
       return res.render("search/index", { products, search, categories });
     } catch (err) {
+      console.log(req.query);
       console.error(err);
     }
   },

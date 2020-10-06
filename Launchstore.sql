@@ -70,3 +70,12 @@ ALTER TABLE "products" DROP CONSTRAINT products_user_id_fkey,
 ADD CONSTRAINT products_user_id_fkey FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
 ALTER TABLE "files" DROP CONSTRAINT files_product_id_fkey,
 ADD CONSTRAINT files_product_id_fkey FOREIGN KEY ("product_id") REFERENCES "products" ("id") ON DELETE CASCADE;
+
+
+DELETE FROM products;
+DELETE FROM users;
+DELETE FROM files;
+
+ALTER SEQUENCE products_id_seq RESTART WITH 1;
+ALTER SEQUENCE users_id_seq RESTART WITH 1;
+ALTER SEQUENCE files_id_seq RESTART WITH 1;

@@ -1,20 +1,21 @@
 const Category = require("../models/Category");
 const Product = require("../models/Product");
 const File = require("../models/File");
+const fs = require("fs");
 const { formatPrice, date } = require("../../lib/utils");
+
 module.exports = {
   async create(req, res) {
     try {
-      const categories = await Category.all();
+      const categories = await Category.findAll();
       return res.render("products/create.html", { categories });
     } catch (err) {
-      console.err(err);
+      console.error(err);
     }
   },
   async show(req, res) {
     try {
-      let results = await Product.find(req.params.id);
-      const product = results.rows[0];
+      let product = await Product.find(req.params.id);
       if (!product) return res.send("product not found");
       const { day, hour, minutes, month } = date(product.updated_at);
       product.published = {
@@ -63,7 +64,7 @@ module.exports = {
 
       price = price.replace(/\D/g, "");
 
-      const productId = await Product.create({
+      const product_id = await Product.create({
         category_id,
         user_id: req.session.userId,
         name,
@@ -75,10 +76,10 @@ module.exports = {
       });
 
       const filesPromises = req.files.map((file) =>
-        File.create({ ...file, productId })
+        File.create({ name: file.filename, path: file.path, product_id })
       );
       await Promise.all(filesPromises);
-      return res.redirect("/products/" + productId + "/edit");
+      return res.redirect("/products/" + product_id + "/edit");
     } catch (err) {
       console.error(err);
     }
@@ -89,7 +90,7 @@ module.exports = {
       if (!product) res.send("Product not found");
       product.old_price = formatPrice(product.old_price);
       product.price = formatPrice(product.price);
-      const categories = await Category.all();
+      const categories = await Category.findAll();
       let files = await Product.files(product.id);
       files = files.map((file) => ({
         ...file,
@@ -98,6 +99,7 @@ module.exports = {
           ""
         )}`,
       }));
+      console.log(product);
       return res.render("products/edit", { product, categories, files });
     } catch (err) {
       console.error(err);
@@ -105,6 +107,7 @@ module.exports = {
   },
   async put(req, res) {
     try {
+      console.log(req.body.id);
       const keys = Object.keys(req.body);
       keys.forEach((key) => {
         if (!req.body[key] && key != "removed_files") {
@@ -114,7 +117,11 @@ module.exports = {
       if (req.files.length != 0) {
         console.log(req.files);
         const newFilesPromise = req.files.map((file) => {
-          File.create({ ...file, productId: req.body.id });
+          File.create({
+            name: file.filename,
+            path: file.path,
+            product_id: req.body.id,
+          });
         });
         await Promise.all(newFilesPromise);
       }
@@ -130,7 +137,7 @@ module.exports = {
       req.body.price = req.body.price.replace(/\D/g, "");
       if (req.body.old_price != req.body.price) {
         const oldProduct = await Product.find(req.body.id);
-        req.body.old_price = oldProduct.rows[0].price;
+        req.body.old_price = oldProduct.price;
       }
 
       await Product.update(req.body.id, {
@@ -149,8 +156,20 @@ module.exports = {
   },
 
   async delete(req, res) {
-    const { id } = req.body;
-    await Product.delete(id);
-    return res.redirect("/");
+    try {
+      console.log(req.body);
+      const files = await Product.files(req.body.id);
+      await Product.delete(req.body.id);
+      files.map((file) => {
+        try {
+          fs.unlinkSync(file.path);
+        } catch (err) {
+          console.error(err);
+        }
+      });
+      return res.redirect("/");
+    } catch (err) {
+      console.error(err);
+    }
   },
 };
