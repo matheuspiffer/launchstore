@@ -28,10 +28,10 @@
             <p>Seleciona ate 6 fotos</p>
         </div>
         <div id="photos-preview">
-            {% if files %}
-                {% for image in files %}
+            {% if product.files %}
+                {% for image in product.files %}
                     <div class="photo" id="{{image.id}}" onclick="PhotosUpload.removeOldPhoto(event)">
-                        <img src="{{image.address}}" alt="{{image.name}}">
+                        <img src="{{image.src}}" alt="{{image.name}}">
                         <i class="material-icons">
                             close
                         </i>
@@ -45,10 +45,10 @@
 <div class="item">
     <div>Valor</div>
     <div>
-        <input type="text" name="price" placeholder="Digite o valor" value="{{product.price}}" onkeydown="Mask.apply(this,'formatBRL')">
+        <input type="text" name="price" placeholder="Digite o valor" value="{{product.formattedPrice}}" onkeydown="Mask.apply(this,'formatBRL')">
     </div>
-    {% if product.old_price %}
-        <input type="hidden" name="old_price" value="{{product.old_price}}">
+    {% if product.formattedOldPrice %}
+        <input type="hidden" name="old_price" value="{{product.formattedOldPrice}}">
     {% endif %}
 </div>
 

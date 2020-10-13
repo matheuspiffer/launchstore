@@ -1,9 +1,10 @@
 const { hash } = require("bcryptjs");
 const User = require("../models/User.js");
 const Product = require("../models/Product.js");
-const Validator = require("../validators/user");
+const LoadProductService = require("../services/loadProductServices");
 const { formatCep, formatCpfCnpj } = require("../../lib/utils");
 const fs = require("fs");
+const { addListener } = require("process");
 
 module.exports = {
   registerForm(req, res) {
@@ -99,5 +100,11 @@ module.exports = {
         user: req.body,
       });
     }
+  },
+  async ads(req, res) {
+    const products = await LoadProductService.load("products", {
+      where: { user_id: req.session.userId },
+    });
+    return res.render("users/ads", { products });
   },
 };

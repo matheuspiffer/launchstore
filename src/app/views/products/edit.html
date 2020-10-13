@@ -1,22 +1,20 @@
 {%extends 'layout.html'%}
+{%import "parts/card.html" as card%}
 
 {% block content %}
-    <section class="container form">
-        <form action="/products?_method=PUT" method="POST" enctype="multipart/form-data">
-            <div class="header">
-                <h3>Editar Produto</h3>
-            </div>
-            <div class="fields">
-                {%include 'products/fields.html'%}
-                <input type="hidden" name="id" value="{{product.id}}">
-            </div>
-            <button class="button edit" type="submit">Atualizar</button>
-        </form>
-        <form action="/products?_method=DELETE" method="POST" id="form-delete">
+    {%call card.render("Editar Produto", "container form")%}
+
+    <form action="/products?_method=PUT" method="POST" enctype="multipart/form-data">
+        <div class="fields">
+            {%include 'products/fields.html'%}
             <input type="hidden" name="id" value="{{product.id}}">
-            <button class="button delete" type="submit">DELETAR</button>
-        </form>
-    </section>
+        </div>
+        <button class="button edit" type="submit">Atualizar</button>
+    </form>
+    <form action="/products?_method=DELETE" method="POST" id="form-delete">
+        <input type="hidden" name="id" value="{{product.id}}">
+        <button class="button delete" type="submit">DELETAR</button>
+    </form>
     <script>
         const formDelete = document.querySelector("#form-delete")
         formDelete.addEventListener("submit", function (event) {
@@ -26,5 +24,6 @@
             }
         })
     </script>
+    {%endcall%}
 
 {% endblock content %}

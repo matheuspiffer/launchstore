@@ -1,6 +1,7 @@
 const Category = require("../models/Category");
 const Product = require("../models/Product");
 const File = require("../models/File");
+const LoadProductService = require("../services/loadProductServices");
 const fs = require("fs");
 const { formatPrice, date } = require("../../lib/utils");
 
@@ -15,42 +16,17 @@ module.exports = {
   },
   async show(req, res) {
     try {
-      let product = await Product.find(req.params.id);
-      if (!product) return res.send("product not found");
-      const { day, hour, minutes, month } = date(product.updated_at);
-      product.published = {
-        day: `${day}/${month}`,
-        hour: `${hour}h${minutes}`,
-      };
-      product.oldPrice = formatPrice(product.old_price);
-      product.price = formatPrice(product.price);
-
-      let files = await Product.files(product.id);
-      files = files.map((file) => {
-        return {
-          ...file,
-          address: `${req.protocol}://${req.headers.host}${file.path.replace(
-            "public",
-            ""
-          )}`,
-        };
+      const product = await LoadProductService.load("product", {
+        where: { id: req.params.id },
       });
-      return res.render("products/show", { product, files });
+      return res.render("products/show", { product });
     } catch (err) {
       console.error(err);
     }
   },
   async post(req, res) {
     try {
-      const keys = Object.keys(req.body);
-      keys.forEach((key) => {
-        if (!req.body[key]) {
-          res.send("Please fill " + key);
-        }
-      });
-
-      if (req.files.length == 0)
-        return res.send("Please, choose at least one image");
+   
 
       let {
         category_id,
@@ -86,34 +62,20 @@ module.exports = {
   },
   async edit(req, res) {
     try {
-      const product = await Product.find(req.params.id);
-      if (!product) res.send("Product not found");
-      product.old_price = formatPrice(product.old_price);
-      product.price = formatPrice(product.price);
+      const product = await LoadProductService.load("product", {
+        where: { id: req.params.id },
+      });
       const categories = await Category.findAll();
-      let files = await Product.files(product.id);
-      files = files.map((file) => ({
-        ...file,
-        address: `${req.protocol}://${req.headers.host}${file.path.replace(
-          "public",
-          ""
-        )}`,
-      }));
+
       console.log(product);
-      return res.render("products/edit", { product, categories, files });
+      return res.render("products/edit", { product, categories });
     } catch (err) {
       console.error(err);
     }
   },
   async put(req, res) {
     try {
-      console.log(req.body.id);
-      const keys = Object.keys(req.body);
-      keys.forEach((key) => {
-        if (!req.body[key] && key != "removed_files") {
-          res.send("Please fill " + key);
-        }
-      });
+  
       if (req.files.length != 0) {
         console.log(req.files);
         const newFilesPromise = req.files.map((file) => {
