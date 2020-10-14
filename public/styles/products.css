@@ -126,3 +126,11 @@
     font-size: 14px;
     letter-spacing: 0.4px;
 }
+
+.single-product .unavailable {
+    font-size: 14px;
+    color: #cccccc;
+    font-weight: bold;
+    background-color: #eeee;
+    padding: 8px 16px;
+}

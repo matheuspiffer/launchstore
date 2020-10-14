@@ -4,44 +4,47 @@
 {% block content %}
     {%call card.render("", "single-product container")%}
 
-        <div class="gallery">
-            <div class="highlight">
-                {% if not product.files[0] %}
-                    <img src="http://placehold.it/500x500?text=produto sem foto" alt="">
-                    {%else%}
-                    <img src="{{product.files[0].src}}" alt="{{product.files[0].name}}" onclick="Lightbox.open()">
-                {% endif %}
-                <div class="lightbox-target">
-                    <img src="{{product.files[0].src}}" alt="{{product.files[0].name}}">
-                    <a class="lightbox-close" onclick="Lightbox.close()">
-                        <i class="material-icons">close</i>
-                    </a>
-                </div>
-            </div>
-            <div class="gallery-preview">
-                {% for image in product.files %}
-                    <img src="{{image.src}}" alt="{{image.name}}" {% if loop.index0 == 0 %} class="active" {% endif %} onclick="ImageGallery.setImage(event)">
-                {% endfor %}
+    <div class="gallery">
+        <div class="highlight">
+            {% if not product.files[0] %}
+                <img src="http://placehold.it/500x500?text=produto sem foto" alt="">
+                {%else%}
+                <img src="{{product.files[0].src}}" alt="{{product.files[0].name}}" onclick="Lightbox.open()">
+            {% endif %}
+            <div class="lightbox-target">
+                <img src="{{product.files[0].src}}" alt="{{product.files[0].name}}">
+                <a class="lightbox-close" onclick="Lightbox.close()">
+                    <i class="material-icons">close</i>
+                </a>
             </div>
         </div>
-        <div class="info">
-            <h1>{{product.name}}</h1>
-            <div class="published">
+        <div class="gallery-preview">
+            {% for image in product.files %}
+                <img src="{{image.src}}" alt="{{image.name}}" {% if loop.index0 == 0 %} class="active" {% endif %} onclick="ImageGallery.setImage(event)">
+            {% endfor %}
+        </div>
+    </div>
+    <div class="info">
+        <h1>{{product.name}}</h1>
+        <div class="published">
                 Publicado em
                 {{product.published.day}}
                 as
                 {{product.published.hour}}
-            </div>
-            <div class="description">
+        </div>
+        <div class="description">
                 alguma coisa
                 {{product.description}}
+        </div>
+        <div class="price-buy">
+            <div class="price">{{product.formattedPrice}}
+                {% if product.formattedOldPrice !== product.formattedPrice %}
+                    <span class="old">{{product.formattedOldPrice}}</span>
+                {% endif %}
             </div>
-            <div class="price-buy">
-                <div class="price">{{product.formattedPrice}}
-                    {% if product.formattedOldPrice !== product.formattedPrice %}
-                        <span class="old">{{product.formattedOldPrice}}</span>
-                    {% endif %}
-                </div>
+            {% if session.userId and(product.user_id == session.userId) %}
+                <p class="unavailable">Você é o vendedor</p>
+                {%else%}
                 <div class="buy">
                     {% if product.status == 0 %}
                         <p class="unavailable">Indisponivel</p>
@@ -54,7 +57,8 @@
                         </form>
                     {% endif %}
                 </div>
-            </div>
+            {% endif %}
         </div>
-            {%endcall%}
+    </div>
+    {%endcall%}
 {% endblock content %}
